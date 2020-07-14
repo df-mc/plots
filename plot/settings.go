@@ -11,12 +11,11 @@ type Settings struct {
 	// BoundaryBlock is the block used to surround plots with. These blocks cannot be changed by an individual
 	// player.
 	BoundaryBlock world.Block
-	// RoadBlockOuter is the outer block of the pattern on the road. These blocks cannot be changed by any
-	// player.
-	RoadBlockOuter world.Block
-	// RoadBlockInner is the inner block of the pattern on the road. These blocks cannot be changed by any
-	// player.
-	RoadBlockInner world.Block
+	// RoadBlock is the outer block of the pattern on the road. These blocks cannot be changed by any player.
+	RoadBlock world.Block
 	// PlotWidth is the width in blocks that each plot generated will be.
 	PlotWidth int
+	// MaximumPlots is the maximum amount of plots that a player is allowed to claim. Trying to claim more
+	// than this will result in an error.
+	MaximumPlots int
 }

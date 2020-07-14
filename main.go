@@ -36,16 +36,16 @@ func main() {
 	}
 	w := server.World()
 	w.SetDefaultGameMode(gamemode.Creative{})
-	w.SetSpawn(world.BlockPos{2, 24, 2})
+	w.SetSpawn(world.BlockPos{2, plot.RoadHeight, 2})
 	w.SetTime(5000)
 	w.StopTime()
 
 	settings := plot.Settings{
-		FloorBlock:     block.Grass{},
-		BoundaryBlock:  block.Concrete{Colour: colour.LightGrey()},
-		RoadBlockOuter: block.Concrete{Colour: colour.Grey()},
-		RoadBlockInner: block.Wool{Colour: colour.Grey()},
-		PlotWidth:      128,
+		FloorBlock:    block.Grass{},
+		BoundaryBlock: block.StainedTerracotta{Colour: colour.Cyan()},
+		RoadBlock:     block.Concrete{Colour: colour.Grey()},
+		PlotWidth:     128,
+		MaximumPlots:  16,
 	}
 	db, err := plot.OpenDB("plots", settings)
 	if err != nil {
@@ -53,15 +53,17 @@ func main() {
 	}
 	w.Generator(plot.NewGenerator(settings))
 	w.Handle(plot.NewWorldHandler(w, settings))
-	cmd.Register(cmd.New("plot", "Manages plots and their settings", []string{"p", "plot"}, command.Claim{}))
+	cmd.Register(cmd.New("plot", "Manages plots and their settings.", []string{"p", "plot"},
+		command.Claim{}, command.List{}, command.Teleport{}, command.Delete{}, command.Clear{}))
 
 	for {
 		p, err := server.Accept()
 		if err != nil {
-			return
+			break
 		}
 		p.Handle(plot.NewPlayerHandler(p, settings, db))
 	}
+	_ = db.Close()
 }
 
 // readConfig reads the configuration from the config.toml file, or creates the file if it does not yet exist.

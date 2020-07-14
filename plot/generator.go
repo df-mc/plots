@@ -9,22 +9,20 @@ import (
 // Generator implements a generator for a plot world. The settings of the generator are configurable,
 // allowing for different results depending on the fields set.
 type Generator struct {
-	floor, boundary, roadOuter, roadInner uint32
-	width                                 int
+	floor, boundary, road uint32
+	width                 int
 }
 
 // NewGenerator returns a new plot Generator with the Settings passed.
 func NewGenerator(s Settings) *Generator {
 	floor, _ := world.BlockRuntimeID(s.FloorBlock)
 	boundary, _ := world.BlockRuntimeID(s.BoundaryBlock)
-	roadOuter, _ := world.BlockRuntimeID(s.RoadBlockOuter)
-	roadInner, _ := world.BlockRuntimeID(s.RoadBlockInner)
+	roadOuter, _ := world.BlockRuntimeID(s.RoadBlock)
 	return &Generator{
-		floor:     floor,
-		boundary:  boundary,
-		roadOuter: roadOuter,
-		roadInner: roadInner,
-		width:     s.PlotWidth,
+		floor:    floor,
+		boundary: boundary,
+		road:     roadOuter,
+		width:    s.PlotWidth,
 	}
 }
 
@@ -32,6 +30,8 @@ func NewGenerator(s Settings) *Generator {
 var dirt, _ = world.BlockRuntimeID(block.Dirt{})
 
 const (
+	// RoadHeight is a rough Y position of the height of the road where a player can be safely teleported.
+	RoadHeight = 24
 	// Base Y of 20 blocks. The floor will start at a y level of 20.
 	baseY = 20
 	// Path width of 5 blocks, excluding the boundary blocks.
@@ -65,7 +65,7 @@ func (g *Generator) GenerateChunk(pos world.ChunkPos, chunk *chunk.Chunk) {
 			case relativeX < 5 || relativeZ < 5:
 				// Road blocks.
 				g.fill(chunk, localX8, localZ8, baseY)
-				chunk.SetRuntimeID(localX8, baseY+1, localZ8, 0, g.roadOuter)
+				chunk.SetRuntimeID(localX8, baseY+1, localZ8, 0, g.road)
 			case relativeX == 5 || relativeZ == 5 || relativeX == fullPlotSize-1 || relativeZ == fullPlotSize-1:
 				// Boundary blocks.
 				g.fill(chunk, localX8, localZ8, baseY+1)

@@ -16,6 +16,7 @@ type PlayerHandler struct {
 	settings Settings
 	db       *DB
 	p        *player.Player
+	plots    []Position
 }
 
 // LookupHandler looks up the PlayerHandler of a player.Player passed.
@@ -33,10 +34,12 @@ var handlers sync.Map
 // NewPlayerHandler creates a new PlayerHandler for the player.Player passed. The Settings and DB are used to
 // track which plots the player.Player can build in.
 func NewPlayerHandler(p *player.Player, settings Settings, db *DB) *PlayerHandler {
+	positions, _ := db.PlayerPlots(p)
 	h := &PlayerHandler{
 		settings: settings,
 		db:       db,
 		p:        p,
+		plots:    positions,
 	}
 	handlers.Store(p, h)
 	return h
@@ -50,6 +53,30 @@ func (h *PlayerHandler) Settings() Settings {
 // DB returns the plot DB of the PlayerHandler.
 func (h *PlayerHandler) DB() *DB {
 	return h.db
+}
+
+// PlotPositions returns positions of all plots that the PlayerHandler holds.
+func (h *PlayerHandler) PlotPositions() []Position {
+	return h.plots
+}
+
+// Plots returns a list of all Plots that the PlayerHandler owns.
+func (h *PlayerHandler) Plots() []*Plot {
+	plots := make([]*Plot, 0, len(h.plots))
+	for _, pos := range h.plots {
+		plot, err := h.db.Plot(pos)
+		if err != nil {
+			continue
+		}
+		plots = append(plots, plot)
+	}
+	return plots
+}
+
+// SetPlotPositions sets the positions of all plots that the PlayerHandler holds.
+func (h *PlayerHandler) SetPlotPositions(positions []Position) error {
+	h.plots = positions
+	return h.db.StorePlayerPlots(h.p, positions)
 }
 
 // HandleMove shows information on the plot that the player enters.
