@@ -5,6 +5,7 @@ import (
 	"github.com/df-mc/dragonfly/dragonfly/player"
 	"github.com/df-mc/dragonfly/dragonfly/world"
 	"github.com/df-mc/dragonfly/dragonfly/world/particle"
+	"github.com/df-mc/dragonfly/dragonfly/world/sound"
 	"github.com/go-gl/mathgl/mgl64"
 	"sync"
 )
@@ -100,6 +101,7 @@ func (h *PlayerHandler) HandleMove(_ *event.Context, pos mgl64.Vec3, _, _ float6
 // HandleBlockBreak prevents block breaking outside of the player's plots.
 func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos world.BlockPos) {
 	if !h.canEdit(pos) {
+		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
 		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
 		ctx.Cancel()
 	}
@@ -108,6 +110,7 @@ func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos world.BlockPos)
 // HandleBlockPlace prevents block placing outside of the player's plots.
 func (h *PlayerHandler) HandleBlockPlace(ctx *event.Context, pos world.BlockPos, _ world.Block) {
 	if !h.canEdit(pos) {
+		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
 		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
 		ctx.Cancel()
 	}

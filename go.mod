@@ -3,7 +3,7 @@ module github.com/df-mc/plots
 go 1.13
 
 require (
-	github.com/df-mc/dragonfly v0.0.3-0.20200714202903-1b27e2439c5a
+	github.com/df-mc/dragonfly v0.0.3-0.20200714203916-2224315090f0
 	github.com/df-mc/goleveldb v1.1.8
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a
 	github.com/google/uuid v1.1.1
