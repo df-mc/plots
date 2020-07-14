@@ -118,8 +118,6 @@ func (h *PlayerHandler) HandleItemUseOnBlock(ctx *event.Context, pos world.Block
 	held, _ := h.p.HeldItems()
 	if _, ok := held.Item().(world.Block); !ok && !h.canEdit(pos) {
 		// For blocks, we don't return here but at HandleBlockPlace.
-		h.p.World().SetBlock(pos, h.p.World().Block(pos))
-		h.p.World().SetBlock(pos.Side(face), h.p.World().Block(pos.Side(face)))
 		ctx.Cancel()
 	}
 }

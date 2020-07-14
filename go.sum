@@ -7,8 +7,8 @@ github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghf
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/df-mc/dragonfly v0.0.3-0.20200714154550-50a8c2b54882 h1:RdI80EIdklACWcAIzVLPf8sMMlKQ5GZOTM6SItJavXU=
-github.com/df-mc/dragonfly v0.0.3-0.20200714154550-50a8c2b54882/go.mod h1:je3Ya3vdR/V73w1PzfoKrUBdLcbfTmPsUsmIkw3IGUM=
+github.com/df-mc/dragonfly v0.0.3-0.20200714202903-1b27e2439c5a h1:vRwL8VGACeB92lr9V9b+mhM0HPFFtrkCzMegq9htyes=
+github.com/df-mc/dragonfly v0.0.3-0.20200714202903-1b27e2439c5a/go.mod h1:je3Ya3vdR/V73w1PzfoKrUBdLcbfTmPsUsmIkw3IGUM=
 github.com/df-mc/goleveldb v1.1.8 h1:XPzH9rlh8GvcKQOvnidbhx7uDIZ91l4q+t886ju5z1w=
 github.com/df-mc/goleveldb v1.1.8/go.mod h1:t9l/GXXTQ3Z5oBELqye1p0ItbGHN/vyNZeWBYfkXkSM=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=

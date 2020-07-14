@@ -106,3 +106,8 @@ func (r *resetter) At(x, y, z int, blockAt func(x int, y int, z int) world.Block
 		return block.Air{}
 	}
 }
+
+// AdditionalLiquidAt always returns nil.
+func (r *resetter) AdditionalLiquidAt(x, y, z int) world.Liquid {
+	return nil
+}
