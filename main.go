@@ -54,7 +54,7 @@ func main() {
 	w.Generator(plot.NewGenerator(settings))
 	w.Handle(plot.NewWorldHandler(w, settings))
 	cmd.Register(cmd.New("plot", "Manages plots and their settings.", []string{"p", "plot"},
-		command.Claim{}, command.List{}, command.Teleport{}, command.Delete{}, command.Clear{}))
+		command.Claim{}, command.List{}, command.Teleport{}, command.Delete{}, command.Clear{}, command.Auto{}))
 
 	for {
 		p, err := server.Accept()

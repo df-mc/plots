@@ -3,7 +3,6 @@ package command
 import (
 	"github.com/df-mc/dragonfly/dragonfly/cmd"
 	"github.com/df-mc/dragonfly/dragonfly/player"
-	"github.com/df-mc/dragonfly/dragonfly/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"reflect"
@@ -30,7 +29,7 @@ func (t Teleport) Run(source cmd.Source, output *cmd.Output) {
 	pl := h.Plots()[t.Number-1]
 	pos := plotPositions[t.Number-1]
 
-	p.Teleport(pos.Absolute(h.Settings()).Add(world.BlockPos{2, plot.RoadHeight, 2}).Vec3Middle())
+	p.Teleport(pos.TeleportPosition(h.Settings()))
 	output.Printf(text.Green()(pl.ColourToFormat()("■"), "Successfully teleported to your plot."))
 }
 

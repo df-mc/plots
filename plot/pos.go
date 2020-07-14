@@ -3,6 +3,7 @@ package plot
 import (
 	"github.com/df-mc/dragonfly/dragonfly/block"
 	"github.com/df-mc/dragonfly/dragonfly/world"
+	"github.com/go-gl/mathgl/mgl64"
 )
 
 // Position represents the position of a plot. These positions are similar to chunk positions, in that they
@@ -25,16 +26,9 @@ func PosFromBlockPos(pos world.BlockPos, settings Settings) Position {
 	return Position{pos[0] / fullPlotSize, pos[2] / fullPlotSize}
 }
 
-// PosFromHash returns a Position by a byte hash created using Position.Hash(). PosFromHash panics if the
-// length of the hash is not 8.
-func PosFromHash(h []byte) Position {
-	if len(h) != 8 {
-		panic("position hash must be 8 bytes long")
-	}
-	return Position{
-		int(int32(uint32(h[0]) | uint32(h[1])<<8 | uint32(h[2])<<16 | uint32(h[3])<<24)),
-		int(int32(uint32(h[4]) | uint32(h[5])<<8 | uint32(h[6])<<16 | uint32(h[7])<<24)),
-	}
+// Add adds a Position to the current Position and returns a new resulting Position.
+func (pos Position) Add(p Position) Position {
+	return Position{pos[0] + p[0], pos[1] + p[1]}
 }
 
 // Hash creates a hash of the position and returns it. This hash is unique per Position and may be used to do
@@ -61,11 +55,16 @@ func (pos Position) Bounds(settings Settings) (min, max world.BlockPos) {
 	}
 }
 
-// Absolute returns an absolute world.BlockPos that can be used to, for example, teleport a player to a plot.
+// Absolute returns an absolute world.BlockPos that holds the corner of the plot.
 func (pos Position) Absolute(settings Settings) world.BlockPos {
 	fullPlotSize := pathWidth + boundaryWidth + settings.PlotWidth
 	baseX, baseZ := pos[0]*fullPlotSize, pos[1]*fullPlotSize
 	return world.BlockPos{baseX, 0, baseZ}
+}
+
+// TeleportPosition returns an absolute mgl64.Vec3 that can be used for teleporting the player.
+func (pos Position) TeleportPosition(settings Settings) mgl64.Vec3 {
+	return pos.Absolute(settings).Add(world.BlockPos{2, RoadHeight, 2}).Vec3Middle()
 }
 
 // Within checks if a world.BlockPos is within the minimum and maximum world.BlockPos passed.
