@@ -7,6 +7,7 @@ import (
 	"github.com/df-mc/dragonfly/dragonfly/block/colour"
 	"github.com/df-mc/dragonfly/dragonfly/cmd"
 	"github.com/df-mc/dragonfly/dragonfly/player/chat"
+	"github.com/df-mc/dragonfly/dragonfly/world"
 	"github.com/df-mc/dragonfly/dragonfly/world/gamemode"
 	"github.com/df-mc/plots/plot"
 	"github.com/df-mc/plots/plot/command"
@@ -35,10 +36,9 @@ func main() {
 	}
 	w := server.World()
 	w.SetDefaultGameMode(gamemode.Creative{})
-
-	spawn := w.Spawn()
-	spawn[1] = 23
-	w.SetSpawn(spawn)
+	w.SetSpawn(world.BlockPos{2, 24, 2})
+	w.SetTime(5000)
+	w.StopTime()
 
 	settings := plot.Settings{
 		FloorBlock:     block.Grass{},
