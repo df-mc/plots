@@ -119,7 +119,7 @@ func (h *PlayerHandler) HandleBlockPlace(ctx *event.Context, pos world.BlockPos,
 // HandleItemUseOnBlock prevents using items on blocks outside of the player's plots.
 func (h *PlayerHandler) HandleItemUseOnBlock(ctx *event.Context, pos world.BlockPos, face world.Face, _ mgl64.Vec3) {
 	held, _ := h.p.HeldItems()
-	if _, ok := held.Item().(world.Block); !ok && !h.canEdit(pos) {
+	if _, ok := held.Item().(world.Block); !ok && (!h.canEdit(pos) || !h.canEdit(pos.Side(face))) {
 		// For blocks, we don't return here but at HandleBlockPlace.
 		ctx.Cancel()
 	}
