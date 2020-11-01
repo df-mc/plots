@@ -27,53 +27,51 @@ func (p *Plot) Owned() bool {
 	return p.Owner != uuid.UUID{}
 }
 
-var white, green = text.White(), text.Green()
-
 // Info returns a string of info about the Plot.
 func (p *Plot) Info() string {
 	if !p.Owned() {
-		return white(" This plot is currently", green("free")+white("."), "\n", white("   Use", green("/p claim"), "to claim it."))
+		return text.Colourf("<white> This plot is currently <green>free</green>.</white>\n<white>   Use <green>/p claim</green> to claim it.")
 	}
 	c := p.ColourToFormat()
-	return white(c("■"), "Now entering", green(p.OwnerName)+white("'s plot."))
+	return text.Colourf("<%v>■</%v> <white>Now entering <green>%v</green>'s plot.", c, c, p.OwnerName)
 }
 
 // ColourToFormat converts the colour of the plot to a text.FormatFunc and returns it.
-func (p *Plot) ColourToFormat() text.FormatFunc {
+func (p *Plot) ColourToFormat() string {
 	c, _ := colour.Colour{}.FromString(p.Colour)
 	switch c.(colour.Colour) {
 	default:
-		return text.White()
+		return "white"
 	case colour.Orange():
-		return text.Gold()
+		return "gold"
 	case colour.Magenta():
-		return text.Purple()
+		return "purple"
 	case colour.LightBlue():
-		return text.Aqua()
+		return "aqua"
 	case colour.Yellow():
-		return text.Yellow()
+		return "yellow"
 	case colour.Lime():
-		return text.Green()
+		return "green"
 	case colour.Pink():
-		return text.Red()
+		return "red"
 	case colour.Grey():
-		return text.DarkGrey()
+		return "dark-grey"
 	case colour.LightGrey():
-		return text.Grey()
+		return "grey"
 	case colour.Cyan():
-		return text.Blue()
+		return "blue"
 	case colour.Purple():
-		return text.DarkPurple()
+		return "dark-purple"
 	case colour.Blue():
-		return text.DarkBlue()
+		return "dark-blue"
 	case colour.Brown():
-		return text.DarkYellow()
+		return "dark-yellow"
 	case colour.Green():
-		return text.DarkGreen()
+		return "dark-green"
 	case colour.Red():
-		return text.DarkRed()
+		return "dark-red"
 	case colour.Black():
-		return text.Black()
+		return "black"
 	}
 }
 

@@ -30,7 +30,9 @@ func (t Teleport) Run(source cmd.Source, output *cmd.Output) {
 	pos := plotPositions[t.Number-1]
 
 	p.Teleport(pos.TeleportPosition(h.Settings()))
-	output.Printf(text.Green()(pl.ColourToFormat()("■"), "Successfully teleported to your plot."))
+
+	f := pl.ColourToFormat()
+	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully teleported to your plot.</green>", f, f))
 }
 
 // tp ...

@@ -6,7 +6,6 @@ import (
 	"github.com/df-mc/dragonfly/dragonfly/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
-	"reflect"
 )
 
 // Auto implements the /plot auto command. It teleports the user to the nearest unclaimed plot.
@@ -33,7 +32,7 @@ func (a Auto) Run(source cmd.Source, output *cmd.Output) {
 					}
 					// The plot isn't yet stored, so it's not claimed. We can teleport the player there.
 					p.Teleport(surrounding.TeleportPosition(h.Settings()))
-					output.Printf(text.Green()("A free plot was successfully found nearby."))
+					output.Printf(text.Colourf("<green>A free plot was successfully found nearby.</green>"))
 					return
 				}
 			}
@@ -45,15 +44,7 @@ func (a Auto) Run(source cmd.Source, output *cmd.Output) {
 // auto ...
 type auto string
 
-// Type ...
-func (auto) Type() string {
+// SubName ...
+func (auto) SubName() string {
 	return "auto"
 }
-
-// Options ...
-func (auto) Options() []string {
-	return []string{"auto"}
-}
-
-// SetOption ...
-func (auto) SetOption(string, reflect.Value) {}

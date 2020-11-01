@@ -58,7 +58,8 @@ func (d Delete) Run(source cmd.Source, output *cmd.Output) {
 			}
 		}
 	}
-	output.Printf(current.ColourToFormat()("■")+text.Green()(" Successfully deleted the plot. (%v/%v)"), len(plots)-1, h.Settings().MaximumPlots)
+	f := current.ColourToFormat()
+	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully deleted the plot. (%v/%v)</green>", f, f, len(plots)-1), h.Settings().MaximumPlots)
 }
 
 // del ...

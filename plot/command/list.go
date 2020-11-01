@@ -5,8 +5,6 @@ import (
 	"github.com/df-mc/dragonfly/dragonfly/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
-	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -24,26 +22,18 @@ func (l List) Run(source cmd.Source, output *cmd.Output) {
 	var str strings.Builder
 	for i, p := range plots {
 		c := p.ColourToFormat()
-		str.WriteString(text.White()(strconv.Itoa(i+1)+":", c("■", p.ColourToString())))
+		str.WriteString(text.Colourf("<white>%v:</white> <%v>■ %v</%v>", i+1, c, p.ColourToString(), c))
 		if i != len(plots)-1 {
 			str.WriteString("\n")
 		}
 	}
-	output.Printf(text.Green()("Your plots:\n" + str.String()))
+	output.Printf(text.Colourf("<green>Your plots:</green>\n" + str.String()))
 }
 
 // list ...
 type list string
 
-// Type ...
-func (list) Type() string {
+// SubName ...
+func (list) SubName() string {
 	return "list"
 }
-
-// Options ...
-func (list) Options() []string {
-	return []string{"list"}
-}
-
-// SetOption ...
-func (list) SetOption(string, reflect.Value) {}

@@ -35,7 +35,8 @@ func (r Clear) Run(source cmd.Source, output *cmd.Output) {
 		return
 	}
 	pos.Reset(p.World(), h.Settings())
-	output.Printf(current.ColourToFormat()("■") + text.Green()(" Successfully cleared the plot."))
+	f := current.ColourToFormat()
+	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully cleared the plot.</green>", f, f))
 }
 
 // clear ...

@@ -9,7 +9,6 @@ import (
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"math/rand"
-	"reflect"
 	"time"
 )
 
@@ -64,7 +63,8 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 			}
 		}
 	}
-	output.Printf(newPlot.ColourToFormat()("■")+text.Green()(" Successfully claimed the plot. (%v/%v)"), len(plots)+1, h.Settings().MaximumPlots)
+	f := newPlot.ColourToFormat()
+	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully claimed the plot. (%v/%v)</green>", f, f, len(plots)+1), h.Settings().MaximumPlots)
 }
 
 // generateRandomColour generates a random colour based on the colours of existing plots. Where possible, a
@@ -92,15 +92,7 @@ func generateRandomColour(existing []*plot.Plot) colour.Colour {
 // claim ...
 type claim string
 
-// Type ...
-func (claim) Type() string {
+// SubName ...
+func (claim) SubName() string {
 	return "claim"
 }
-
-// Options ...
-func (claim) Options() []string {
-	return []string{"claim"}
-}
-
-// SetOption ...
-func (claim) SetOption(string, reflect.Value) {}
