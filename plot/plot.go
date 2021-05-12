@@ -1,7 +1,7 @@
 package plot
 
 import (
-	"github.com/df-mc/dragonfly/dragonfly/block/colour"
+	"github.com/df-mc/dragonfly/server/block"
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"strings"
@@ -38,39 +38,39 @@ func (p *Plot) Info() string {
 
 // ColourToFormat converts the colour of the plot to a text.FormatFunc and returns it.
 func (p *Plot) ColourToFormat() string {
-	c, _ := colour.Colour{}.FromString(p.Colour)
-	switch c.(colour.Colour) {
+	c, _ := block.Colour{}.FromString(p.Colour)
+	switch c.(block.Colour) {
 	default:
 		return "white"
-	case colour.Orange():
+	case block.ColourOrange():
 		return "gold"
-	case colour.Magenta():
+	case block.ColourMagenta():
 		return "purple"
-	case colour.LightBlue():
+	case block.ColourLightBlue():
 		return "aqua"
-	case colour.Yellow():
+	case block.ColourYellow():
 		return "yellow"
-	case colour.Lime():
+	case block.ColourLime():
 		return "green"
-	case colour.Pink():
+	case block.ColourPink():
 		return "red"
-	case colour.Grey():
+	case block.ColourGrey():
 		return "dark-grey"
-	case colour.LightGrey():
+	case block.ColourLightGrey():
 		return "grey"
-	case colour.Cyan():
+	case block.ColourCyan():
 		return "blue"
-	case colour.Purple():
+	case block.ColourPurple():
 		return "dark-purple"
-	case colour.Blue():
+	case block.ColourBlue():
 		return "dark-blue"
-	case colour.Brown():
+	case block.ColourBrown():
 		return "dark-yellow"
-	case colour.Green():
+	case block.ColourGreen():
 		return "dark-green"
-	case colour.Red():
+	case block.ColourRed():
 		return "dark-red"
-	case colour.Black():
+	case block.ColourBlack():
 		return "black"
 	}
 }

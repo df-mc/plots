@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/df-mc/dragonfly/dragonfly"
-	"github.com/df-mc/dragonfly/dragonfly/block"
-	"github.com/df-mc/dragonfly/dragonfly/block/colour"
-	"github.com/df-mc/dragonfly/dragonfly/cmd"
-	"github.com/df-mc/dragonfly/dragonfly/player/chat"
-	"github.com/df-mc/dragonfly/dragonfly/world"
-	"github.com/df-mc/dragonfly/dragonfly/world/gamemode"
+	"github.com/df-mc/dragonfly/server"
+	"github.com/df-mc/dragonfly/server/block"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/cmd"
+	"github.com/df-mc/dragonfly/server/player/chat"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/df-mc/plots/plot/command"
 	"github.com/pelletier/go-toml"
@@ -29,21 +28,21 @@ func main() {
 		log.Fatalf("error reading config file: %v", err)
 	}
 
-	server := dragonfly.New(&config, log)
-	server.CloseOnProgramEnd()
-	if err := server.Start(); err != nil {
+	s := server.New(&config, log)
+	s.CloseOnProgramEnd()
+	if err := s.Start(); err != nil {
 		log.Fatalln(err)
 	}
-	w := server.World()
-	w.SetDefaultGameMode(gamemode.Creative{})
-	w.SetSpawn(world.BlockPos{2, plot.RoadHeight, 2})
+	w := s.World()
+	w.SetDefaultGameMode(world.GameModeCreative{})
+	w.SetSpawn(cube.Pos{2, plot.RoadHeight, 2})
 	w.SetTime(5000)
 	w.StopTime()
 
 	settings := plot.Settings{
 		FloorBlock:    block.Grass{},
-		BoundaryBlock: block.StainedTerracotta{Colour: colour.Cyan()},
-		RoadBlock:     block.Concrete{Colour: colour.Grey()},
+		BoundaryBlock: block.StainedTerracotta{Colour: block.ColourCyan()},
+		RoadBlock:     block.Concrete{Colour: block.ColourGrey()},
 		PlotWidth:     128,
 		MaximumPlots:  16,
 	}
@@ -57,7 +56,7 @@ func main() {
 		command.Claim{}, command.List{}, command.Teleport{}, command.Delete{}, command.Clear{}, command.Auto{}))
 
 	for {
-		p, err := server.Accept()
+		p, err := s.Accept()
 		if err != nil {
 			break
 		}
@@ -67,8 +66,8 @@ func main() {
 }
 
 // readConfig reads the configuration from the config.toml file, or creates the file if it does not yet exist.
-func readConfig() (dragonfly.Config, error) {
-	c := dragonfly.DefaultConfig()
+func readConfig() (server.Config, error) {
+	c := server.DefaultConfig()
 	if _, err := os.Stat("config.toml"); os.IsNotExist(err) {
 		data, err := toml.Marshal(c)
 		if err != nil {

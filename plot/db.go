@@ -3,7 +3,7 @@ package plot
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/df-mc/dragonfly/dragonfly/player"
+	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/goleveldb/leveldb"
 	"os"
 )

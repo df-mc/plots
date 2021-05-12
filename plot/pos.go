@@ -1,8 +1,9 @@
 package plot
 
 import (
-	"github.com/df-mc/dragonfly/dragonfly/block"
-	"github.com/df-mc/dragonfly/dragonfly/world"
+	"github.com/df-mc/dragonfly/server/block"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/go-gl/mathgl/mgl64"
 )
 
@@ -11,7 +12,7 @@ import (
 type Position [2]int
 
 // PosFromBlockPos returns a Position that reflects the position of the plot present at that position.
-func PosFromBlockPos(pos world.BlockPos, settings Settings) Position {
+func PosFromBlockPos(pos cube.Pos, settings Settings) Position {
 	fullPlotSize := pathWidth + boundaryWidth + settings.PlotWidth
 	// Integers are truncated down, so negative numbers will be wrong. We need to account for those.
 
@@ -43,32 +44,32 @@ func (pos Position) Hash() []byte {
 
 // Bounds returns the bounds of the Plot present at this position. Blocks may only be edited within these
 // block positions.
-func (pos Position) Bounds(settings Settings) (min, max world.BlockPos) {
+func (pos Position) Bounds(settings Settings) (min, max cube.Pos) {
 	fullPlotSize := pathWidth + boundaryWidth + settings.PlotWidth
 
 	baseX, baseZ := pos[0]*fullPlotSize, pos[1]*fullPlotSize
 	x, z := baseX+pathWidth+1, baseZ+pathWidth+1
-	return world.BlockPos{x, 0, z}, world.BlockPos{
+	return cube.Pos{x, 0, z}, cube.Pos{
 		baseX + fullPlotSize - 2,
 		255,
 		baseZ + fullPlotSize - 2,
 	}
 }
 
-// Absolute returns an absolute world.BlockPos that holds the corner of the plot.
-func (pos Position) Absolute(settings Settings) world.BlockPos {
+// Absolute returns an absolute cube.Pos that holds the corner of the plot.
+func (pos Position) Absolute(settings Settings) cube.Pos {
 	fullPlotSize := pathWidth + boundaryWidth + settings.PlotWidth
 	baseX, baseZ := pos[0]*fullPlotSize, pos[1]*fullPlotSize
-	return world.BlockPos{baseX, 0, baseZ}
+	return cube.Pos{baseX, 0, baseZ}
 }
 
 // TeleportPosition returns an absolute mgl64.Vec3 that can be used for teleporting the player.
 func (pos Position) TeleportPosition(settings Settings) mgl64.Vec3 {
-	return pos.Absolute(settings).Add(world.BlockPos{2, RoadHeight, 2}).Vec3Middle()
+	return pos.Absolute(settings).Add(cube.Pos{2, RoadHeight, 2}).Vec3Middle()
 }
 
-// Within checks if a world.BlockPos is within the minimum and maximum world.BlockPos passed.
-func Within(pos, min, max world.BlockPos) bool {
+// Within checks if a cube.Pos is within the minimum and maximum cube.Pos passed.
+func Within(pos, min, max cube.Pos) bool {
 	return (pos[0] >= min[0] && pos[0] <= max[0]) &&
 		(pos[1] >= min[1] && pos[1] <= max[1]) &&
 		(pos[2] >= min[2] && pos[2] <= max[2])
@@ -77,7 +78,7 @@ func Within(pos, min, max world.BlockPos) bool {
 // Reset resets the Plot at the Position in the world.World passed. The Settings are used to determine the
 // bounds of the plot.
 func (pos Position) Reset(w *world.World, settings Settings) {
-	base := pos.Absolute(settings).Add(world.BlockPos{pathWidth + 1, 0, pathWidth + 1})
+	base := pos.Absolute(settings).Add(cube.Pos{pathWidth + 1, 0, pathWidth + 1})
 	w.BuildStructure(base, &resetter{settings: settings})
 }
 
@@ -96,18 +97,13 @@ func (r *resetter) Dimensions() [3]int {
 }
 
 // At returns either dirt, the floor block or air, depending on the y value.
-func (r *resetter) At(x, y, z int, blockAt func(x int, y int, z int) world.Block) world.Block {
+func (r *resetter) At(_, y, _ int, _ func(x int, y int, z int) world.Block) (world.Block, world.Liquid) {
 	switch {
 	case y < 22:
-		return block.Dirt{}
+		return block.Dirt{}, nil
 	case y == 22:
-		return r.settings.FloorBlock
+		return r.settings.FloorBlock, nil
 	default:
-		return block.Air{}
+		return block.Air{}, nil
 	}
-}
-
-// AdditionalLiquidAt always returns nil.
-func (r *resetter) AdditionalLiquidAt(x, y, z int) world.Liquid {
-	return nil
 }

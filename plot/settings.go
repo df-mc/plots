@@ -1,6 +1,6 @@
 package plot
 
-import "github.com/df-mc/dragonfly/dragonfly/world"
+import "github.com/df-mc/dragonfly/server/world"
 
 // Settings holds the settings for a plot Generator. These settings may be changed in order to change the
 // appearance of the plots generated.

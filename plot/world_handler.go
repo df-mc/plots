@@ -1,8 +1,9 @@
 package plot
 
 import (
-	"github.com/df-mc/dragonfly/dragonfly/event"
-	"github.com/df-mc/dragonfly/dragonfly/world"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/event"
+	"github.com/df-mc/dragonfly/server/world"
 )
 
 // WorldHandler handles events of the world.World, making sure liquids don't spread out of plots.
@@ -21,7 +22,7 @@ func NewWorldHandler(w *world.World, settings Settings) *WorldHandler {
 }
 
 // HandleLiquidFlow prevents liquid from flowing out of a plot.
-func (w *WorldHandler) HandleLiquidFlow(ctx *event.Context, _, into world.BlockPos, _, _ world.Block) {
+func (w *WorldHandler) HandleLiquidFlow(ctx *event.Context, _, into cube.Pos, _, _ world.Block) {
 	fullPlotSize := int32(pathWidth + boundaryWidth + w.settings.PlotWidth)
 	relativeX, relativeZ := mod(int32(into[0]), fullPlotSize), mod(int32(into[2]), fullPlotSize)
 

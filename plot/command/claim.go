@@ -1,11 +1,10 @@
 package command
 
 import (
-	"github.com/df-mc/dragonfly/dragonfly/block"
-	"github.com/df-mc/dragonfly/dragonfly/block/colour"
-	"github.com/df-mc/dragonfly/dragonfly/cmd"
-	"github.com/df-mc/dragonfly/dragonfly/player"
-	"github.com/df-mc/dragonfly/dragonfly/world"
+	"github.com/df-mc/dragonfly/server/block"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/cmd"
+	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"math/rand"
@@ -26,7 +25,7 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 	p := source.(*player.Player)
 	h, _ := plot.LookupHandler(p)
 
-	blockPos := world.BlockPosFromVec3(p.Position())
+	blockPos := cube.PosFromVec3(p.Position())
 	pos := plot.PosFromBlockPos(blockPos, h.Settings())
 
 	min, max := pos.Bounds(h.Settings())
@@ -59,7 +58,7 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 	for x := -1; x < h.Settings().PlotWidth+1; x++ {
 		for z := -1; z < h.Settings().PlotWidth+1; z++ {
 			if x == -1 || x == h.Settings().PlotWidth || z == -1 || z == h.Settings().PlotWidth {
-				p.World().SetBlock(min.Add(world.BlockPos{x, 22, z}), b)
+				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), b)
 			}
 		}
 	}
@@ -69,13 +68,13 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 
 // generateRandomColour generates a random colour based on the colours of existing plots. Where possible, a
 // colour that has not yet been used will be selected.
-func generateRandomColour(existing []*plot.Plot) colour.Colour {
+func generateRandomColour(existing []*plot.Plot) block.Colour {
 	if len(existing) >= 16 {
-		return colour.All()[rand.Intn(16)]
+		return block.Colours()[rand.Intn(16)]
 	}
 	for {
 		found := true
-		c := colour.All()[rand.Intn(16)]
+		c := block.Colours()[rand.Intn(16)]
 		for _, p := range existing {
 			if c.String() == p.Colour {
 				// We generated a colour that we already used before, so try again.

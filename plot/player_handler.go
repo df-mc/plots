@@ -1,11 +1,12 @@
 package plot
 
 import (
-	"github.com/df-mc/dragonfly/dragonfly/event"
-	"github.com/df-mc/dragonfly/dragonfly/player"
-	"github.com/df-mc/dragonfly/dragonfly/world"
-	"github.com/df-mc/dragonfly/dragonfly/world/particle"
-	"github.com/df-mc/dragonfly/dragonfly/world/sound"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/event"
+	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/world"
+	"github.com/df-mc/dragonfly/server/world/particle"
+	"github.com/df-mc/dragonfly/server/world/sound"
 	"github.com/go-gl/mathgl/mgl64"
 	"sync"
 )
@@ -82,7 +83,7 @@ func (h *PlayerHandler) SetPlotPositions(positions []Position) error {
 
 // HandleMove shows information on the plot that the player enters.
 func (h *PlayerHandler) HandleMove(_ *event.Context, pos mgl64.Vec3, _, _ float64) {
-	newPos, oldPos := world.BlockPosFromVec3(pos), world.BlockPosFromVec3(h.p.Position())
+	newPos, oldPos := cube.PosFromVec3(pos), cube.PosFromVec3(h.p.Position())
 	plotPos := PosFromBlockPos(newPos, h.settings)
 	previous := PosFromBlockPos(oldPos, h.settings)
 
@@ -99,7 +100,7 @@ func (h *PlayerHandler) HandleMove(_ *event.Context, pos mgl64.Vec3, _, _ float6
 }
 
 // HandleBlockBreak prevents block breaking outside of the player's plots.
-func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos world.BlockPos) {
+func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos) {
 	if !h.canEdit(pos) {
 		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
 		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
@@ -108,7 +109,7 @@ func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos world.BlockPos)
 }
 
 // HandleBlockPlace prevents block placing outside of the player's plots.
-func (h *PlayerHandler) HandleBlockPlace(ctx *event.Context, pos world.BlockPos, _ world.Block) {
+func (h *PlayerHandler) HandleBlockPlace(ctx *event.Context, pos cube.Pos, _ world.Block) {
 	if !h.canEdit(pos) {
 		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
 		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
@@ -117,7 +118,7 @@ func (h *PlayerHandler) HandleBlockPlace(ctx *event.Context, pos world.BlockPos,
 }
 
 // HandleItemUseOnBlock prevents using items on blocks outside of the player's plots.
-func (h *PlayerHandler) HandleItemUseOnBlock(ctx *event.Context, pos world.BlockPos, face world.Face, _ mgl64.Vec3) {
+func (h *PlayerHandler) HandleItemUseOnBlock(ctx *event.Context, pos cube.Pos, face cube.Face, _ mgl64.Vec3) {
 	held, _ := h.p.HeldItems()
 	if _, ok := held.Item().(world.Block); !ok && (!h.canEdit(pos) || !h.canEdit(pos.Side(face))) {
 		// For blocks, we don't return here but at HandleBlockPlace.
@@ -126,8 +127,8 @@ func (h *PlayerHandler) HandleItemUseOnBlock(ctx *event.Context, pos world.Block
 }
 
 // canEdit checks if the player.Player held by the PlayerHandler is permitted to edit the block at the
-// world.BlockPos passed.
-func (h *PlayerHandler) canEdit(pos world.BlockPos) bool {
+// cube.Pos passed.
+func (h *PlayerHandler) canEdit(pos cube.Pos) bool {
 	plotPos := PosFromBlockPos(pos, h.settings)
 	min, max := plotPos.Bounds(h.settings)
 	if !Within(pos, min, max) {
