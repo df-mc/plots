@@ -63,7 +63,7 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 		}
 	}
 	f := newPlot.ColourToFormat()
-	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully claimed the plot. (%v/%v)</green>", f, f, len(plots)+1), h.Settings().MaximumPlots)
+	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully claimed the plot. (%v/%v)</green>", f, f, len(plots)+1, h.Settings().MaximumPlots))
 }
 
 // generateRandomColour generates a random colour based on the colours of existing plots. Where possible, a
