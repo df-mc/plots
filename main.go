@@ -43,7 +43,7 @@ func main() {
 		FloorBlock:    block.Grass{},
 		BoundaryBlock: block.StainedTerracotta{Colour: block.ColourCyan()},
 		RoadBlock:     block.Concrete{Colour: block.ColourGrey()},
-		PlotWidth:     128,
+		PlotWidth:     32,
 		MaximumPlots:  16,
 	}
 	db, err := plot.OpenDB("plots", settings)
