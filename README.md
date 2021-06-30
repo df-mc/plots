@@ -3,7 +3,7 @@ Plots is a Plots server implementation written using Dragonfly. It may be compil
 
 Test server:
 ```
-51.75.66.11:19133
+188.166.78.44:19133
 ```
 
 
