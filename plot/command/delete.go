@@ -6,7 +6,6 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
-	"reflect"
 )
 
 // Delete implements a /p delete command, which may be used to clear a plot and delete the claim.
@@ -65,15 +64,7 @@ func (d Delete) Run(source cmd.Source, output *cmd.Output) {
 // del ...
 type del string
 
-// Type ...
-func (del) Type() string {
+// SubName ...
+func (del) SubName() string {
 	return "delete"
 }
-
-// Options ...
-func (del) Options() []string {
-	return []string{"delete"}
-}
-
-// SetOption ...
-func (del) SetOption(string, reflect.Value) {}

@@ -6,7 +6,6 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
-	"reflect"
 )
 
 // Clear implements the /plot clear command. It may be used to clear one's plot without removing the claim
@@ -42,15 +41,7 @@ func (r Clear) Run(source cmd.Source, output *cmd.Output) {
 // clear ...
 type clear string
 
-// Type ...
-func (clear) Type() string {
+// SubName ...
+func (clear) SubName() string {
 	return "clear"
 }
-
-// Options ...
-func (clear) Options() []string {
-	return []string{"clear"}
-}
-
-// SetOption ...
-func (clear) SetOption(string, reflect.Value) {}

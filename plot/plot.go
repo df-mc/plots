@@ -1,7 +1,8 @@
 package plot
 
 import (
-	"github.com/df-mc/dragonfly/server/block"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/item"
 	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"strings"
@@ -20,6 +21,8 @@ type Plot struct {
 	// Colour is the colour of the plot. The border of the plot will have this colour and the colour will be
 	// used to refer to different chunks owned by the player.
 	Colour string
+
+	MergedDirections []cube.Direction
 }
 
 // Owned checks if the Plot is currently owned.
@@ -38,39 +41,39 @@ func (p *Plot) Info() string {
 
 // ColourToFormat converts the colour of the plot to a text.FormatFunc and returns it.
 func (p *Plot) ColourToFormat() string {
-	c, _ := block.Colour{}.FromString(p.Colour)
-	switch c.(block.Colour) {
+	c, _ := item.Colour{}.FromString(p.Colour)
+	switch c.(item.Colour) {
 	default:
 		return "white"
-	case block.ColourOrange():
+	case item.ColourOrange():
 		return "gold"
-	case block.ColourMagenta():
+	case item.ColourMagenta():
 		return "purple"
-	case block.ColourLightBlue():
+	case item.ColourLightBlue():
 		return "aqua"
-	case block.ColourYellow():
+	case item.ColourYellow():
 		return "yellow"
-	case block.ColourLime():
+	case item.ColourLime():
 		return "green"
-	case block.ColourPink():
+	case item.ColourPink():
 		return "red"
-	case block.ColourGrey():
+	case item.ColourGrey():
 		return "dark-grey"
-	case block.ColourLightGrey():
+	case item.ColourLightGrey():
 		return "grey"
-	case block.ColourCyan():
+	case item.ColourCyan():
 		return "blue"
-	case block.ColourPurple():
+	case item.ColourPurple():
 		return "dark-purple"
-	case block.ColourBlue():
+	case item.ColourBlue():
 		return "dark-blue"
-	case block.ColourBrown():
+	case item.ColourBrown():
 		return "dark-yellow"
-	case block.ColourGreen():
+	case item.ColourGreen():
 		return "dark-green"
-	case block.ColourRed():
+	case item.ColourRed():
 		return "dark-red"
-	case block.ColourBlack():
+	case item.ColourBlack():
 		return "black"
 	}
 }

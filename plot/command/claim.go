@@ -4,6 +4,7 @@ import (
 	"github.com/df-mc/dragonfly/server/block"
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
+	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
@@ -68,13 +69,13 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 
 // generateRandomColour generates a random colour based on the colours of existing plots. Where possible, a
 // colour that has not yet been used will be selected.
-func generateRandomColour(existing []*plot.Plot) block.Colour {
+func generateRandomColour(existing []*plot.Plot) item.Colour {
 	if len(existing) >= 16 {
-		return block.Colours()[rand.Intn(16)]
+		return item.Colours()[rand.Intn(16)]
 	}
 	for {
 		found := true
-		c := block.Colours()[rand.Intn(16)]
+		c := item.Colours()[rand.Intn(16)]
 		for _, p := range existing {
 			if c.String() == p.Colour {
 				// We generated a colour that we already used before, so try again.

@@ -6,6 +6,7 @@ import (
 	"github.com/df-mc/dragonfly/server/block"
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
+	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
@@ -41,8 +42,8 @@ func main() {
 
 	settings := plot.Settings{
 		FloorBlock:    block.Grass{},
-		BoundaryBlock: block.StainedTerracotta{Colour: block.ColourCyan()},
-		RoadBlock:     block.Concrete{Colour: block.ColourGrey()},
+		BoundaryBlock: block.StainedTerracotta{Colour: item.ColourCyan()},
+		RoadBlock:     block.Concrete{Colour: item.ColourGrey()},
 		PlotWidth:     32,
 		MaximumPlots:  16,
 	}
@@ -53,7 +54,13 @@ func main() {
 	w.Generator(plot.NewGenerator(settings))
 	w.Handle(plot.NewWorldHandler(w, settings))
 	cmd.Register(cmd.New("plot", "Manages plots and their settings.", []string{"p", "plot"},
-		command.Claim{}, command.List{}, command.Teleport{}, command.Delete{}, command.Clear{}, command.Auto{}))
+		command.Claim{},
+		command.List{},
+		command.Teleport{},
+		command.Delete{},
+		command.Clear{},
+		command.Auto{},
+	))
 
 	for {
 		p, err := s.Accept()

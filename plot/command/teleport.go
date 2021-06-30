@@ -5,7 +5,6 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
-	"reflect"
 )
 
 // Teleport implements a /plot tp command which may be used to teleport to a specific plot owned by the
@@ -38,15 +37,7 @@ func (t Teleport) Run(source cmd.Source, output *cmd.Output) {
 // tp ...
 type tp string
 
-// Type ...
-func (tp) Type() string {
+// SubName ...
+func (tp) SubName() string {
 	return "tp"
 }
-
-// Options ...
-func (tp) Options() []string {
-	return []string{"tp"}
-}
-
-// SetOption ...
-func (tp) SetOption(string, reflect.Value) {}

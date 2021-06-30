@@ -86,7 +86,7 @@ func mod(a, b int32) int32 {
 
 // fill fills the column at a specific x and z in the chunk passed up to a specific height with dirt blocks.
 func (g *Generator) fill(chunk *chunk.Chunk, x, z uint8, height uint8) {
-	for y := uint8(0); y <= height; y++ {
+	for y := int16(0); y <= int16(height); y++ {
 		chunk.SetRuntimeID(x, y, z, 0, dirt)
 	}
 }
