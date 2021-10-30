@@ -35,7 +35,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	w := s.World()
-	w.SetDefaultGameMode(world.GameModeCreative{})
+	w.SetDefaultGameMode(world.GameModeCreative)
 	w.SetSpawn(cube.Pos{2, plot.RoadHeight, 2})
 	w.SetTime(5000)
 	w.StopTime()
