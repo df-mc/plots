@@ -65,15 +65,15 @@ func (g *Generator) GenerateChunk(pos world.ChunkPos, chunk *chunk.Chunk) {
 			case relativeX < 5 || relativeZ < 5:
 				// Road blocks.
 				g.fill(chunk, localX8, localZ8, baseY)
-				chunk.SetRuntimeID(localX8, baseY+1, localZ8, 0, g.road)
+				chunk.SetBlock(localX8, baseY+1, localZ8, 0, g.road)
 			case relativeX == 5 || relativeZ == 5 || relativeX == fullPlotSize-1 || relativeZ == fullPlotSize-1:
 				// Boundary blocks.
 				g.fill(chunk, localX8, localZ8, baseY+1)
-				chunk.SetRuntimeID(localX8, baseY+2, localZ8, 0, g.boundary)
+				chunk.SetBlock(localX8, baseY+2, localZ8, 0, g.boundary)
 			default:
 				// Normal plot floor blocks.
 				g.fill(chunk, localX8, localZ8, baseY+1)
-				chunk.SetRuntimeID(localX8, baseY+2, localZ8, 0, g.floor)
+				chunk.SetBlock(localX8, baseY+2, localZ8, 0, g.floor)
 			}
 		}
 	}
@@ -87,6 +87,6 @@ func mod(a, b int32) int32 {
 // fill fills the column at a specific x and z in the chunk passed up to a specific height with dirt blocks.
 func (g *Generator) fill(chunk *chunk.Chunk, x, z uint8, height uint8) {
 	for y := int16(0); y <= int16(height); y++ {
-		chunk.SetRuntimeID(x, y, z, 0, dirt)
+		chunk.SetBlock(x, y, z, 0, dirt)
 	}
 }
