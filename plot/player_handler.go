@@ -3,6 +3,7 @@ package plot
 import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/event"
+	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/dragonfly/server/world/particle"
@@ -100,7 +101,7 @@ func (h *PlayerHandler) HandleMove(_ *event.Context, pos mgl64.Vec3, _, _ float6
 }
 
 // HandleBlockBreak prevents block breaking outside of the player's plots.
-func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos) {
+func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos, _ *[]item.Stack) {
 	if !h.canEdit(pos) {
 		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
 		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
