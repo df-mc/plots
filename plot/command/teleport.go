@@ -5,6 +5,7 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
+	"strconv"
 )
 
 // Teleport implements a /plot tp command which may be used to teleport to a specific plot owned by the
@@ -12,7 +13,7 @@ import (
 type Teleport struct {
 	Sub tp
 	// Number is the number of the plot to teleport to. These numbers may be found by running /p list.
-	Number int `name:"number"`
+	Number plotNumber `name:"number"`
 }
 
 // Run ...
@@ -21,12 +22,14 @@ func (t Teleport) Run(source cmd.Source, output *cmd.Output) {
 	h, _ := plot.LookupHandler(p)
 
 	plotPositions := h.PlotPositions()
-	if t.Number < 1 || t.Number > len(plotPositions) {
+
+	number, _ := strconv.Atoi(string(t.Number))
+	if number < 1 || number > len(plotPositions) {
 		output.Errorf("Unknown plot with number %v. Use /p list to get a list of plots to teleport to.", t.Number)
 		return
 	}
-	pl := h.Plots()[t.Number-1]
-	pos := plotPositions[t.Number-1]
+	pl := h.Plots()[number-1]
+	pos := plotPositions[number-1]
 
 	p.Teleport(pos.TeleportPosition(h.Settings()))
 
@@ -40,4 +43,23 @@ type tp string
 // SubName ...
 func (tp) SubName() string {
 	return "tp"
+}
+
+// plotNumber ...
+type plotNumber string
+
+// Type ...
+func (plotNumber) Type() string {
+	return "PlotNumber"
+}
+
+// Options returns a number for every plot the player has.
+func (plotNumber) Options(source cmd.Source) []string {
+	p := source.(*player.Player)
+	h, _ := plot.LookupHandler(p)
+	m := make([]string, len(h.Plots()))
+	for i := range h.Plots() {
+		m[i] = strconv.Itoa(i + 1)
+	}
+	return m
 }
