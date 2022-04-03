@@ -1,6 +1,7 @@
 package plot
 
 import (
+	"fmt"
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/item"
 	"github.com/google/uuid"
@@ -41,7 +42,7 @@ func (p *Plot) Info() string {
 
 // ColourToFormat converts the colour of the plot to a text.FormatFunc and returns it.
 func (p *Plot) ColourToFormat() string {
-	c, _ := item.Colour{}.FromString(p.Colour)
+	c, _ := colourFromString(p.Colour)
 	switch c.(item.Colour) {
 	default:
 		return "white"
@@ -76,6 +77,45 @@ func (p *Plot) ColourToFormat() string {
 	case item.ColourBlack():
 		return "black"
 	}
+}
+
+// colourFromString converts a string to a colour.
+func colourFromString(s string) (interface{}, error) {
+	switch s {
+	case "white":
+		return item.ColourWhite(), nil
+	case "orange":
+		return item.ColourOrange(), nil
+	case "magenta":
+		return item.ColourMagenta(), nil
+	case "light_blue":
+		return item.ColourLightBlue(), nil
+	case "yellow":
+		return item.ColourYellow(), nil
+	case "lime", "light_green":
+		return item.ColourLime(), nil
+	case "pink":
+		return item.ColourPink(), nil
+	case "grey", "gray":
+		return item.ColourGrey(), nil
+	case "light_grey", "light_gray", "silver":
+		return item.ColourLightGrey(), nil
+	case "cyan":
+		return item.ColourCyan(), nil
+	case "purple":
+		return item.ColourPurple(), nil
+	case "blue":
+		return item.ColourBlue(), nil
+	case "brown":
+		return item.ColourBrown(), nil
+	case "green":
+		return item.ColourGreen(), nil
+	case "red":
+		return item.ColourRed(), nil
+	case "black":
+		return item.ColourBlack(), nil
+	}
+	return nil, fmt.Errorf("unexpected colour '%v'", s)
 }
 
 // ColourToString converts the colour of the plot to a readable representation.
