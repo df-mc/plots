@@ -6,6 +6,7 @@ import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"math/rand"
@@ -59,12 +60,17 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 	for x := -1; x < h.Settings().PlotWidth+1; x++ {
 		for z := -1; z < h.Settings().PlotWidth+1; z++ {
 			if x == -1 || x == h.Settings().PlotWidth || z == -1 || z == h.Settings().PlotWidth {
-				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), b)
+				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), b, opts)
 			}
 		}
 	}
 	f := newPlot.ColourToFormat()
 	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully claimed the plot. (%v/%v)</green>", f, f, len(plots)+1, h.Settings().MaximumPlots))
+}
+
+var opts = &world.SetOpts{
+	DisableBlockUpdates:       true,
+	DisableLiquidDisplacement: true,
 }
 
 // generateRandomColour generates a random colour based on the colours of existing plots. Where possible, a

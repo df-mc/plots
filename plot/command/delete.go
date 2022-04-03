@@ -53,7 +53,7 @@ func (d Delete) Run(source cmd.Source, output *cmd.Output) {
 	for x := -1; x < h.Settings().PlotWidth+1; x++ {
 		for z := -1; z < h.Settings().PlotWidth+1; z++ {
 			if x == -1 || x == h.Settings().PlotWidth || z == -1 || z == h.Settings().PlotWidth {
-				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), h.Settings().BoundaryBlock)
+				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), h.Settings().BoundaryBlock, opts)
 			}
 		}
 	}

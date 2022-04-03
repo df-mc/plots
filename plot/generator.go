@@ -15,19 +15,16 @@ type Generator struct {
 
 // NewGenerator returns a new plot Generator with the Settings passed.
 func NewGenerator(s Settings) *Generator {
-	floor, _ := world.BlockRuntimeID(s.FloorBlock)
-	boundary, _ := world.BlockRuntimeID(s.BoundaryBlock)
-	roadOuter, _ := world.BlockRuntimeID(s.RoadBlock)
 	return &Generator{
-		floor:    floor,
-		boundary: boundary,
-		road:     roadOuter,
+		floor:    world.BlockRuntimeID(s.FloorBlock),
+		boundary: world.BlockRuntimeID(s.BoundaryBlock),
+		road:     world.BlockRuntimeID(s.RoadBlock),
 		width:    s.PlotWidth,
 	}
 }
 
 // dirt holds the runtime ID of a dirt block.
-var dirt, _ = world.BlockRuntimeID(block.Dirt{})
+var dirt = world.BlockRuntimeID(block.Dirt{})
 
 const (
 	// RoadHeight is a rough Y position of the height of the road where a player can be safely teleported.
