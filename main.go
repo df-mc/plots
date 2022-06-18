@@ -7,6 +7,7 @@ import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/item"
+	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
@@ -29,6 +30,19 @@ func main() {
 		log.Fatalf("error reading config file: %v", err)
 	}
 
+	settings := plot.Settings{
+		FloorBlock:    block.Grass{},
+		BoundaryBlock: block.StainedTerracotta{Colour: item.ColourCyan()},
+		RoadBlock:     block.Concrete{Colour: item.ColourGrey()},
+		PlotWidth:     32,
+		MaximumPlots:  16,
+	}
+
+	config.WorldConfig = func(def world.Config) world.Config {
+		def.Generator = plot.NewGenerator(settings)
+		return def
+	}
+
 	s := server.New(&config, log)
 	s.CloseOnProgramEnd()
 	if err := s.Start(); err != nil {
@@ -40,18 +54,10 @@ func main() {
 	w.SetTime(5000)
 	w.StopTime()
 
-	settings := plot.Settings{
-		FloorBlock:    block.Grass{},
-		BoundaryBlock: block.StainedTerracotta{Colour: item.ColourCyan()},
-		RoadBlock:     block.Concrete{Colour: item.ColourGrey()},
-		PlotWidth:     32,
-		MaximumPlots:  16,
-	}
 	db, err := plot.OpenDB("plots", settings)
 	if err != nil {
 		log.Fatalf("error opening plot database: %v", err)
 	}
-	w.Generator(plot.NewGenerator(settings))
 	w.Handle(plot.NewWorldHandler(w, settings))
 	cmd.Register(cmd.New("plot", "Manages plots and their settings.", []string{"p", "plot"},
 		command.Claim{},
@@ -62,12 +68,9 @@ func main() {
 		command.Auto{},
 	))
 
-	for {
-		p, err := s.Accept()
-		if err != nil {
-			break
-		}
+	for s.Accept(func(p *player.Player) {
 		p.Handle(plot.NewPlayerHandler(p, settings, db))
+	}) {
 	}
 	_ = db.Close()
 }

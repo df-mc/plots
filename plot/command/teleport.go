@@ -13,7 +13,7 @@ import (
 type Teleport struct {
 	Sub tp
 	// Number is the number of the plot to teleport to. These numbers may be found by running /p list.
-	Number plotNumber `name:"number"`
+	Number plotNumber `cmd:"number"`
 }
 
 // Run ...
