@@ -10,7 +10,7 @@ import (
 
 // List implements a /plot list command which may be used to check the available plots.
 type List struct {
-	Sub list
+	List cmd.SubCommand `cmd:"list"`
 }
 
 // Run ...
@@ -28,12 +28,4 @@ func (l List) Run(source cmd.Source, output *cmd.Output) {
 		}
 	}
 	output.Printf(text.Colourf("<green>Your plots:</green>\n" + str.String()))
-}
-
-// list ...
-type list string
-
-// SubName ...
-func (list) SubName() string {
-	return "list"
 }

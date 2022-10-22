@@ -10,7 +10,7 @@ import (
 
 // Delete implements a /p delete command, which may be used to clear a plot and delete the claim.
 type Delete struct {
-	Sub del
+	Delete cmd.SubCommand `cmd:"delete"`
 }
 
 // Run ...
@@ -59,12 +59,4 @@ func (d Delete) Run(source cmd.Source, output *cmd.Output) {
 	}
 	f := current.ColourToFormat()
 	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully deleted the plot. (%v/%v)</green>", f, f, len(plots)-1, h.Settings().MaximumPlots))
-}
-
-// del ...
-type del string
-
-// SubName ...
-func (del) SubName() string {
-	return "delete"
 }

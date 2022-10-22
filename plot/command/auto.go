@@ -10,7 +10,7 @@ import (
 
 // Auto implements the /plot auto command. It teleports the user to the nearest unclaimed plot.
 type Auto struct {
-	Sub auto
+	Auto cmd.SubCommand `cmd:"auto"`
 }
 
 // Run ...
@@ -39,12 +39,4 @@ func (a Auto) Run(source cmd.Source, output *cmd.Output) {
 		}
 	}
 	output.Errorf("No free plots could be found in a 32x32 square around you.")
-}
-
-// auto ...
-type auto string
-
-// SubName ...
-func (auto) SubName() string {
-	return "auto"
 }

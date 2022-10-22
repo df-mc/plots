@@ -19,7 +19,7 @@ func init() {
 
 // Claim implements the claim command.
 type Claim struct {
-	Sub claim
+	Claim cmd.SubCommand `cmd:"claim"`
 }
 
 // Run ...
@@ -93,12 +93,4 @@ func generateRandomColour(existing []*plot.Plot) item.Colour {
 			return c
 		}
 	}
-}
-
-// claim ...
-type claim string
-
-// SubName ...
-func (claim) SubName() string {
-	return "claim"
 }

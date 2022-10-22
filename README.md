@@ -1,15 +1,17 @@
 # Plots
-Plots is a Plots server implementation written using Dragonfly. It may be compiled with Go 1.13 or up.
+Plots is a Plots server implementation written using Dragonfly. It may be compiled with Go 1.18 or up.
 
-Test server:
+## Installation and usage
+Schematic requires at least Go 1.18. The library may be installed using:
+```shell
+go install github.com/df-mc/schematic
 ```
-188.166.78.44:19133
+or
+```shell
+git clone https://github.com/df-mc/schematic
+cd schematic
+go run main.go
 ```
-
-
-## Contributing
-We use JetBrains Space to manage our issues, pull requests and code reviews, but we welcome contributions
-through GitHub issues and pull requests.
 
 ## Contact
-[![Chat on Discord](https://img.shields.io/badge/Chat-On%20Discord-738BD7.svg?style=for-the-badge)](https://discord.gg/evzQR4R)
+[![Discord Banner 2](https://discordapp.com/api/guilds/623638955262345216/widget.png?style=banner2)](https://discord.gg/U4kFWHhTNR)

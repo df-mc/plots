@@ -11,7 +11,7 @@ import (
 // Teleport implements a /plot tp command which may be used to teleport to a specific plot owned by the
 // player.
 type Teleport struct {
-	Sub tp
+	Tp cmd.SubCommand `cmd:"tp"`
 	// Number is the number of the plot to teleport to. These numbers may be found by running /p list.
 	Number plotNumber `cmd:"number"`
 }
@@ -35,14 +35,6 @@ func (t Teleport) Run(source cmd.Source, output *cmd.Output) {
 
 	f := pl.ColourToFormat()
 	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully teleported to your plot.</green>", f, f))
-}
-
-// tp ...
-type tp string
-
-// SubName ...
-func (tp) SubName() string {
-	return "tp"
 }
 
 // plotNumber ...
