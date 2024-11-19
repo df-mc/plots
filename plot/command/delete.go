@@ -4,6 +4,7 @@ import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 )
@@ -14,7 +15,7 @@ type Delete struct {
 }
 
 // Run ...
-func (d Delete) Run(source cmd.Source, output *cmd.Output) {
+func (d Delete) Run(source cmd.Source, output *cmd.Output, tx *world.Tx) {
 	p := source.(*player.Player)
 	h, _ := plot.LookupHandler(p)
 
@@ -49,11 +50,11 @@ func (d Delete) Run(source cmd.Source, output *cmd.Output) {
 		output.Errorf("Failed deleting plot, please try again later. (%v)", err)
 		return
 	}
-	pos.Reset(p.World(), h.Settings())
+	pos.Reset(tx, h.Settings())
 	for x := -1; x < h.Settings().PlotWidth+1; x++ {
 		for z := -1; z < h.Settings().PlotWidth+1; z++ {
 			if x == -1 || x == h.Settings().PlotWidth || z == -1 || z == h.Settings().PlotWidth {
-				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), h.Settings().BoundaryBlock, opts)
+				tx.SetBlock(min.Add(cube.Pos{x, 22, z}), h.Settings().BoundaryBlock, opts)
 			}
 		}
 	}

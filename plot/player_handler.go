@@ -2,13 +2,14 @@ package plot
 
 import (
 	"github.com/df-mc/dragonfly/server/block/cube"
-	"github.com/df-mc/dragonfly/server/event"
 	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/dragonfly/server/world/particle"
 	"github.com/df-mc/dragonfly/server/world/sound"
 	"github.com/go-gl/mathgl/mgl64"
+	"github.com/google/uuid"
+	"slices"
 	"sync"
 )
 
@@ -16,15 +17,15 @@ import (
 // in plots that they do not own.
 type PlayerHandler struct {
 	player.NopHandler
+	id       uuid.UUID
 	settings Settings
 	db       *DB
-	p        *player.Player
 	plots    []Position
 }
 
 // LookupHandler looks up the PlayerHandler of a player.Player passed.
 func LookupHandler(p *player.Player) (*PlayerHandler, bool) {
-	v, ok := handlers.Load(p)
+	v, ok := handlers.Load(p.UUID())
 	if !ok {
 		return nil, false
 	}
@@ -36,15 +37,15 @@ var handlers sync.Map
 
 // NewPlayerHandler creates a new PlayerHandler for the player.Player passed. The Settings and DB are used to
 // track which plots the player.Player can build in.
-func NewPlayerHandler(p *player.Player, settings Settings, db *DB) *PlayerHandler {
-	positions, _ := db.PlayerPlots(p)
+func NewPlayerHandler(id uuid.UUID, settings Settings, db *DB) *PlayerHandler {
+	positions, _ := db.PlayerPlots(id)
 	h := &PlayerHandler{
+		id:       id,
 		settings: settings,
 		db:       db,
-		p:        p,
 		plots:    positions,
 	}
-	handlers.Store(p, h)
+	handlers.Store(id, h)
 	return h
 }
 
@@ -79,12 +80,13 @@ func (h *PlayerHandler) Plots() []*Plot {
 // SetPlotPositions sets the positions of all plots that the PlayerHandler holds.
 func (h *PlayerHandler) SetPlotPositions(positions []Position) error {
 	h.plots = positions
-	return h.db.StorePlayerPlots(h.p, positions)
+	return h.db.StorePlayerPlots(h.id, positions)
 }
 
 // HandleMove shows information on the plot that the player enters.
-func (h *PlayerHandler) HandleMove(_ *event.Context, pos mgl64.Vec3, _, _ float64) {
-	newPos, oldPos := cube.PosFromVec3(pos), cube.PosFromVec3(h.p.Position())
+func (h *PlayerHandler) HandleMove(ctx *player.Context, pos mgl64.Vec3, _ cube.Rotation) {
+	p := ctx.V()
+	newPos, oldPos := cube.PosFromVec3(pos), cube.PosFromVec3(p.Position())
 	plotPos := PosFromBlockPos(newPos, h.settings)
 	previous := PosFromBlockPos(oldPos, h.settings)
 
@@ -92,35 +94,38 @@ func (h *PlayerHandler) HandleMove(_ *event.Context, pos mgl64.Vec3, _, _ float6
 	if (plotPos != previous && Within(newPos, min, max)) ||
 		(plotPos == previous && (!Within(oldPos, min, max) && Within(newPos, min, max))) {
 		// Player entered a plot that it wasn't in before.
-		p, err := h.db.Plot(plotPos)
+		pl, err := h.db.Plot(plotPos)
 		if err != nil {
-			p = &Plot{}
+			pl = &Plot{}
 		}
-		h.p.SendTip(p.Info())
+		p.SendTip(pl.Info())
 	}
 }
 
 // HandleBlockBreak prevents block breaking outside of the player's plots.
-func (h *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos, _ *[]item.Stack) {
+func (h *PlayerHandler) HandleBlockBreak(ctx *player.Context, pos cube.Pos, _ *[]item.Stack, _ *int) {
+	p := ctx.V()
 	if !h.canEdit(pos) {
-		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
-		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
+		p.Tx().PlaySound(pos.Vec3Centre(), sound.Deny{})
+		p.Tx().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
 		ctx.Cancel()
 	}
 }
 
 // HandleBlockPlace prevents block placing outside of the player's plots.
-func (h *PlayerHandler) HandleBlockPlace(ctx *event.Context, pos cube.Pos, _ world.Block) {
+func (h *PlayerHandler) HandleBlockPlace(ctx *player.Context, pos cube.Pos, _ world.Block) {
+	p := ctx.V()
 	if !h.canEdit(pos) {
-		h.p.World().PlaySound(pos.Vec3Centre(), sound.Deny{})
-		h.p.World().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
+		p.Tx().PlaySound(pos.Vec3Centre(), sound.Deny{})
+		p.Tx().AddParticle(pos.Vec3Centre(), particle.BlockForceField{})
 		ctx.Cancel()
 	}
 }
 
 // HandleItemUseOnBlock prevents using items on blocks outside of the player's plots.
-func (h *PlayerHandler) HandleItemUseOnBlock(ctx *event.Context, pos cube.Pos, face cube.Face, _ mgl64.Vec3) {
-	held, _ := h.p.HeldItems()
+func (h *PlayerHandler) HandleItemUseOnBlock(ctx *player.Context, pos cube.Pos, face cube.Face, _ mgl64.Vec3) {
+	p := ctx.V()
+	held, _ := p.HeldItems()
 	if _, ok := held.Item().(world.Block); !ok && (!h.canEdit(pos) || !h.canEdit(pos.Side(face))) {
 		// For blocks, we don't return here but at HandleBlockPlace.
 		ctx.Cancel()
@@ -139,18 +144,10 @@ func (h *PlayerHandler) canEdit(pos cube.Pos) bool {
 	if err != nil {
 		return false
 	}
-	if plot.Owner == h.p.UUID() {
-		return true
-	}
-	for _, helper := range plot.Helpers {
-		if h.p.UUID() == helper {
-			return true
-		}
-	}
-	return false
+	return plot.Owner == h.id || slices.Index(plot.Helpers, h.id) != -1
 }
 
 // HandleQuit removes the PlayerHandler from the Handlers map.
 func (h *PlayerHandler) HandleQuit() {
-	handlers.Delete(h.p)
+	handlers.Delete(h.id)
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 )
@@ -14,7 +15,7 @@ type Auto struct {
 }
 
 // Run ...
-func (a Auto) Run(source cmd.Source, output *cmd.Output) {
+func (a Auto) Run(source cmd.Source, output *cmd.Output, _ *world.Tx) {
 	p := source.(*player.Player)
 	h, _ := plot.LookupHandler(p)
 

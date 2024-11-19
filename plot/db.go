@@ -3,8 +3,8 @@ package plot
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/goleveldb/leveldb"
+	"github.com/google/uuid"
 	"os"
 )
 
@@ -71,9 +71,8 @@ func (db *DB) RemovePlot(pos Position) error {
 }
 
 // PlayerPlots attempts to read a list of Positions from the DB for the player.Player passed.
-func (db *DB) PlayerPlots(p *player.Player) ([]Position, error) {
-	uuid := p.UUID()
-	val, err := db.ldb.Get(uuid[:], nil)
+func (db *DB) PlayerPlots(id uuid.UUID) ([]Position, error) {
+	val, err := db.ldb.Get(id[:], nil)
 	if err != nil {
 		return nil, fmt.Errorf("player plots: %w", err)
 	}
@@ -85,13 +84,12 @@ func (db *DB) PlayerPlots(p *player.Player) ([]Position, error) {
 }
 
 // StorePlayerPlots attempts to store the Positions of the plots it owns into the DB.
-func (db *DB) StorePlayerPlots(p *player.Player, positions []Position) error {
+func (db *DB) StorePlayerPlots(id uuid.UUID, positions []Position) error {
 	val, err := json.Marshal(positions)
 	if err != nil {
 		return fmt.Errorf("store player plots: %w", err)
 	}
-	uuid := p.UUID()
-	if err := db.ldb.Put(uuid[:], val, nil); err != nil {
+	if err := db.ldb.Put(id[:], val, nil); err != nil {
 		return fmt.Errorf("store player plots: %w", err)
 	}
 	return nil

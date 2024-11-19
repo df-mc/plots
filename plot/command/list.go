@@ -3,6 +3,7 @@ package command
 import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"strings"
@@ -14,7 +15,7 @@ type List struct {
 }
 
 // Run ...
-func (l List) Run(source cmd.Source, output *cmd.Output) {
+func (l List) Run(source cmd.Source, output *cmd.Output, _ *world.Tx) {
 	p := source.(*player.Player)
 	h, _ := plot.LookupHandler(p)
 	plots := h.Plots()

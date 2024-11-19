@@ -9,8 +9,8 @@ import (
 // Generator implements a generator for a plot world. The settings of the generator are configurable,
 // allowing for different results depending on the fields set.
 type Generator struct {
-	floor, boundary, road uint32
-	width                 int
+	floor, boundary, road, dirt uint32
+	width                       int
 }
 
 // NewGenerator returns a new plot Generator with the Settings passed.
@@ -19,12 +19,10 @@ func NewGenerator(s Settings) *Generator {
 		floor:    world.BlockRuntimeID(s.FloorBlock),
 		boundary: world.BlockRuntimeID(s.BoundaryBlock),
 		road:     world.BlockRuntimeID(s.RoadBlock),
+		dirt:     world.BlockRuntimeID(block.Dirt{}),
 		width:    s.PlotWidth,
 	}
 }
-
-// dirt holds the runtime ID of a dirt block.
-var dirt = world.BlockRuntimeID(block.Dirt{})
 
 const (
 	// RoadHeight is a rough Y position of the height of the road where a player can be safely teleported.
@@ -84,6 +82,6 @@ func mod(a, b int32) int32 {
 // fill fills the column at a specific x and z in the chunk passed up to a specific height with dirt blocks.
 func (g *Generator) fill(chunk *chunk.Chunk, x, z uint8, height uint8) {
 	for y := int16(0); y <= int16(height); y++ {
-		chunk.SetBlock(x, y, z, 0, dirt)
+		chunk.SetBlock(x, y, z, 0, g.dirt)
 	}
 }

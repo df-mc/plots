@@ -77,9 +77,9 @@ func Within(pos, min, max cube.Pos) bool {
 
 // Reset resets the Plot at the Position in the world.World passed. The Settings are used to determine the
 // bounds of the plot.
-func (pos Position) Reset(w *world.World, settings Settings) {
+func (pos Position) Reset(tx *world.Tx, settings Settings) {
 	base := pos.Absolute(settings).Add(cube.Pos{pathWidth + 1, 0, pathWidth + 1})
-	w.BuildStructure(base, &resetter{settings: settings})
+	tx.BuildStructure(base, &resetter{settings: settings})
 }
 
 // resetter is a world.Structure implements that handles the fast resetting of chunks.

@@ -10,12 +10,7 @@ import (
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"math/rand"
-	"time"
 )
-
-func init() {
-	rand.Seed(time.Now().Unix())
-}
 
 // Claim implements the claim command.
 type Claim struct {
@@ -23,7 +18,7 @@ type Claim struct {
 }
 
 // Run ...
-func (Claim) Run(source cmd.Source, output *cmd.Output) {
+func (Claim) Run(source cmd.Source, output *cmd.Output, tx *world.Tx) {
 	p := source.(*player.Player)
 	h, _ := plot.LookupHandler(p)
 
@@ -60,7 +55,7 @@ func (Claim) Run(source cmd.Source, output *cmd.Output) {
 	for x := -1; x < h.Settings().PlotWidth+1; x++ {
 		for z := -1; z < h.Settings().PlotWidth+1; z++ {
 			if x == -1 || x == h.Settings().PlotWidth || z == -1 || z == h.Settings().PlotWidth {
-				p.World().SetBlock(min.Add(cube.Pos{x, 22, z}), b, opts)
+				tx.SetBlock(min.Add(cube.Pos{x, 22, z}), b, opts)
 			}
 		}
 	}

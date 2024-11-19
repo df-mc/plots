@@ -7,24 +7,20 @@ import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/item"
-	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/df-mc/plots/plot/command"
 	"github.com/pelletier/go-toml"
-	"github.com/sirupsen/logrus"
+	"log"
+	"log/slog"
 	"os"
 )
 
 func main() {
-	log := logrus.New()
-	log.Formatter = &logrus.TextFormatter{ForceColors: true}
-	log.Level = logrus.DebugLevel
-
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
 
-	conf, err := readConfig(log)
+	conf, err := readConfig(slog.Default())
 	if err != nil {
 		log.Fatalf("error reading conf file: %v", err)
 	}
@@ -53,7 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error opening plot database: %v", err)
 	}
-	w.Handle(plot.NewWorldHandler(w, settings))
+	w.Handle(plot.NewWorldHandler(settings))
 	cmd.Register(cmd.New("plot", "Manages plots and their settings.", []string{"p", "plot"},
 		command.Claim{},
 		command.List{},
@@ -65,16 +61,15 @@ func main() {
 
 	s.Listen()
 
-	for s.Accept(func(p *player.Player) {
-		p.Handle(plot.NewPlayerHandler(p, settings, db))
-	}) {
+	for p := range s.Accept() {
+		p.Handle(plot.NewPlayerHandler(p.UUID(), settings, db))
 	}
 	_ = db.Close()
 }
 
 // readConfig reads the configuration from the config.toml file, or creates the
 // file if it does not yet exist.
-func readConfig(log server.Logger) (server.Config, error) {
+func readConfig(log *slog.Logger) (server.Config, error) {
 	c := server.DefaultConfig()
 	var zero server.Config
 	if _, err := os.Stat("config.toml"); os.IsNotExist(err) {

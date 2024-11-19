@@ -4,6 +4,7 @@ import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/df-mc/dragonfly/server/world"
 	"github.com/df-mc/plots/plot"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 )
@@ -15,7 +16,7 @@ type Clear struct {
 }
 
 // Run ...
-func (r Clear) Run(source cmd.Source, output *cmd.Output) {
+func (r Clear) Run(source cmd.Source, output *cmd.Output, tx *world.Tx) {
 	p := source.(*player.Player)
 	h, _ := plot.LookupHandler(p)
 
@@ -33,7 +34,7 @@ func (r Clear) Run(source cmd.Source, output *cmd.Output) {
 		output.Errorf("You cannot clear this plot because you do not own it.")
 		return
 	}
-	pos.Reset(p.World(), h.Settings())
+	pos.Reset(tx, h.Settings())
 	f := current.ColourToFormat()
 	output.Printf(text.Colourf("<%v>■</%v> <green>Successfully cleared the plot.</green>", f, f))
 }

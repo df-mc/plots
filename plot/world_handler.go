@@ -2,7 +2,6 @@ package plot
 
 import (
 	"github.com/df-mc/dragonfly/server/block/cube"
-	"github.com/df-mc/dragonfly/server/event"
 	"github.com/df-mc/dragonfly/server/world"
 )
 
@@ -10,19 +9,15 @@ import (
 type WorldHandler struct {
 	world.NopHandler
 	settings Settings
-	w        *world.World
 }
 
 // NewWorldHandler returns a new WorldHandler instance using the world.World and Settings passed.
-func NewWorldHandler(w *world.World, settings Settings) *WorldHandler {
-	return &WorldHandler{
-		settings: settings,
-		w:        w,
-	}
+func NewWorldHandler(settings Settings) *WorldHandler {
+	return &WorldHandler{settings: settings}
 }
 
 // HandleLiquidFlow prevents liquid from flowing out of a plot.
-func (w *WorldHandler) HandleLiquidFlow(ctx *event.Context, _, into cube.Pos, _, _ world.Block) {
+func (w *WorldHandler) HandleLiquidFlow(ctx *world.Context, _, into cube.Pos, _ world.Liquid, _ world.Block) {
 	fullPlotSize := int32(pathWidth + boundaryWidth + w.settings.PlotWidth)
 	relativeX, relativeZ := mod(int32(into[0]), fullPlotSize), mod(int32(into[2]), fullPlotSize)
 
